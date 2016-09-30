@@ -1,0 +1,1250 @@
+@extends('layout.master-inner-nosearch')
+@section('title', 'My Account page')
+@section('styles')
+    {!! Html::style(asset('css/jquery-ui.min.css')) !!}
+    {!! Html::style( asset('css/toastr.min.css')) !!}
+    {!! Html::style( asset('style.css')) !!}
+    {!! Html::style( asset('css/dark.css')) !!}
+    {!! Html::style( asset('css/font-icons.css')) !!}
+    {!! Html::style( asset('css/animate.css')) !!}
+    {!! Html::style( asset('css/magnific-popup.css')) !!}
+    {!! Html::style( asset('css/responsive.css')) !!}
+    {!! Html::style( asset('css/vistaz.css')) !!}
+    {!! Html::script( asset('js/jquery.js')) !!}
+    <script>
+        var jq=jQuery.noConflict();
+    </script>
+    <script type="text/javascript">
+        jq(document).ready(function () {
+            jq("#append1").click(function () {
+                $("div.branchesedit").append('<div class="row no-margin" ><div class="col-md-2"><input type="text"  id="branchesvalue1" class="form-control input-sm branchesvalue1" name="branch_name[]" placeholder="Branch Address"></div><div class="col-md-3"><input type="text"  id="branchesvalue2" name="branch_address[]" class="form-control input-sm branchesvalue2" placeholder="Branch Name"></div><div class="col-md-4"><input type="text" class="form-control" id="branchesvalue3" class="form-control input-sm branchesvalue3"   name="location[]" placeholder="Branch Location"></div>'+
+                '<div class="col-md-2">'+
+                '<select id="exampleSelect1" class="form-control branchesvalue4"  name="country[]" id="contact_country">'+
+                '<option value="">Select a country</option>'+
+                @foreach($countries as $country)
+                '<option value="{{ $country->name }}" >{{ $country->name }}</option>'+
+                @endforeach
+                '</select>'+
+                '</div>'+
+                '<div class="col-md-1"><input type="hidden" class="form-control" name="id[]" value="0"><button class="remove_this btn btn-danger btn-rounded btn-condensed btn-sm"><span class="fa fa-times"></span></button></div></div>');
+                return false;
+            });
+
+        });
+    </script>
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".delete-row").click(function(){
+                var dataId = jq(this).attr("resource");
+                var userId = jq("input[name=hospitalId]").val();
+                var urlVal = "deletebranch/"+dataId;
+                var urlMethod = "delete";
+
+                var result = confirm("Want to delete?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'_token': jq('input[name=_token]').val()},
+                        success: function(data){
+                            alert(data);
+                            jq(this).closest('tr.controls ').remove();
+                        }
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-row").click(function(){
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxeditprofile";
+                // alert(urlVal);
+                var urlMethod = "post";
+                var result = confirm("Want to edit?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'_token': jq('input[name=_token]').val(),'hospital_name':jq('input[name=hospital_name]').val()},
+                        success: function(data){
+                            //alert(data);
+                            window.location.href = BASEURL+"hospital/"+userId+"/myprofile";
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-row1").click(function(){
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxeditprofileinfo";
+                //alert(urlVal);
+                var urlMethod = "post";
+                var result = confirm("Want to edit?");
+                var hospital_addr=document.getElementById("address").value;
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'_token': jq('input[name=_token]').val(),'hospital_city':jq('input[name=hospital_city]').val(),'hospital_state':jq('input[name=hospital_state]').val(),'hospital_country':jq('input[name=hospital_country]').val(),'hospital_pin':jq('input[name=hospital_pin]').val(),'hospital_address':jq('input[name=hospital_address]').val(),'hospital_address':hospital_addr},
+                        success: function(data){
+                            window.location.href = BASEURL+"hospital/"+userId+"/myprofile";
+                        }
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-row2").click(function(){
+
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxeditcontactinfo";
+                // alert(urlVal);
+                var urlMethod = "post";
+                var result = confirm("Want to edit?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'_token': jq('input[name=_token]').val(),'hospital_telephone':jq('input[name=hospital_telephone]').val(),'hospital_email':jq('input[name=hospital_email]').val()},
+                        success: function(data){
+                            window.location.href = BASEURL+"hospital/"+userId+"/myprofile";
+                        }
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-row3").click(function(){
+                var inputCount = jq("#resourceedit").find('input#resourcevalue').size();
+                var dataString=[];
+                var dataString1=[];
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxeditresourceinfo";
+                var urlMethod = "post";
+                if(inputCount>0)
+                {
+                    jq("#resourceedit").find('input#resourcevalue').each(function(){
+                    //alert($(this).val());
+                    dataString.push($(this).val());
+                });
+
+
+                    jq("#resourceedit").find('input#resourcevalue1').each(function(){
+                        //alert($(this).val());
+                        dataString1.push($(this).val());
+                    });
+
+                }
+              //alert(dataString.toString());
+               // var dataString=[ "apple", "orange", "mango" ];
+                var result = confirm("Want to edit?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'resource':dataString,'id':dataString1 },
+                    success: function(data){
+                        window.location.href = BASEURL+"hospital/"+userId+"/myprofile";
+                        }
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+
+
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-speciality").click(function(){
+                var inputCount = jq("#specialityedit").find('input#specialityvalue').size();
+
+                var dataString=[];
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxeditspecialities";
+                var urlMethod = "post";
+                if(inputCount>0)
+                {
+                    jq("#specialityedit").find('input#specialityvalue:checked').each(function(){
+                        dataString.push($(this).val());
+                    });
+
+                }
+               // alert(dataString.toString());
+                // var dataString=[ "apple", "orange", "mango" ];
+                var result = confirm("Want to edit?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'speciality':dataString},
+                        success: function(data){
+                            alert(data);                        }
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+
+
+
+
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-cert").click(function(){
+                var inputCount = jq("#tabs-26").find('input#certifications').size();
+               // alert(inputCount);
+                //alert(inputCount);
+                var dataString=[];
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxeditcertifications";
+                var urlMethod = "post";
+                if(inputCount>0)
+                {
+                    jq("#tabs-26").find('input#certifications:checked').each(function(){
+                        dataString.push($(this).val());
+                    });
+
+                }
+                //alert(dataString.toString());
+                // var dataString=[ "apple", "orange", "mango" ];
+                var result = confirm("Want to edit?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'cerification':dataString},
+                        success: function(data){
+                            alert(data);                        }
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-branches").click(function(){
+                var inputCount = jq(".branchesedit").find('input.branchesvalue1').size();
+                //alert(inputCount);
+                var branches=[];
+                var dataString={};
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxeditbranchinfo";
+                var urlMethod = "post";
+                if(inputCount>0)
+                {
+                    jq(".branchesedit").find('input.branchesvalue1').each(function(){
+                        //dataString.push($(this).val());
+                        //var addressvalue=$(this).parent().siblings().size();
+                        //alert(addressvalue);
+                        branches.push({
+                            "address" : $(this).parent().find('input.branchesvalue1').val()
+
+                        });
+                    });
+                    dataString.branches = branches;
+                }
+                alert(dataString.branches.toString());
+                console.log(JSON.stringify(dataString));
+                // var dataString=[ "apple", "orange", "mango" ];
+                var result = confirm("Want to edit?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'branches': dataString},
+                        success: function(data){
+                            alert(data);
+                        }
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+
+    <script type="text/javascript">
+        jq(document).ready(function(){
+            jq(".edit-about").click(function(){
+                var BASEURL = "/TreatIn-web-app/public/";
+                var userId = jq(this).attr("resource");
+                var urlVal = BASEURL+"hospital/"+userId+"/ajaxedithospitalinfo";
+                var urlMethod = "post";
+                var hospital_info=document.getElementById("exampleTextarea").value;
+                var result = confirm("Want to edit?");
+                if (result) {
+                    jq.ajax({
+                        url: urlVal,
+                        type: urlMethod,
+                        context: this,
+                        data: {'_token': jq('input[name=_token]').val(),'hospital_info':hospital_info},
+                        success: function(data){
+                            window.location.href = BASEURL+"hospital/"+userId+"/myprofile";
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+
+
+
+
+
+@stop
+
+@section('content')
+    <!--Hospital Details Body-->
+    <section id="content">
+        <div class="container-full clearfix">
+            <div class="row">
+                <div class="col-md-3" id="leftCol" >
+
+                    @include('portal.partials.patient.patient-sidebar')
+                </div><!-- Left sidebar ends -->
+                <div class="col-md-9">
+                    <div class="dividersmall"></div>
+                    <h2>Hospital Details</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            @foreach($hospitalInfo as $hospinfo)
+                                <div id="mainview1">
+                                    <div class="box box-primary">
+
+                                        <div class="box-body">
+
+                                            <div class="row">
+                                                <button class="editbt" onclick="javascript:editprofile('mainview1','mainedit1')"><span class="fa fa-pencil"></span> Edit</button>
+                                                <div class="col-md-3">
+                                                    <?php
+                                                    if(trim($hospinfo['hospitalinfo']['hospital_photo'])!="")
+                                                    {
+                                                        $hospitalinfoimg=Config::get('constants.DOCTOR_EMPANEL_URL').str_replace('/public/', '/', $hospinfo['hospitalinfo']['hospital_photo']);
+                                                    }
+                                                    else
+                                                    {
+                                                        $hospitalinfoimg="http://epaper2.mid-day.com/images/no_image_thumb.gif";;
+                                                    }
+                                                    ?>
+                                                    <img src="{{$hospitalinfoimg}}"/>
+
+                                                </div>
+                                                <div class="col-md-9"><h3> {{$hospinfo['hospitalinfo']['hospital_name']}}</h3>
+                                                    <span>  {{$hospinfo['hospitalinfo']['city']}}, {{$hospinfo['hospitalinfo']['state']}} </span>
+                                                </div>
+                                            </div>
+
+                                        </div></div>
+                                    <div class="dividersmall"></div>
+                                </div>
+                                <div id="mainedit1" style="display:none">
+                                    <div class="box box-primary">
+
+                                        <div class="box-body">
+
+                                            <div class="row">
+                                                <button class="editbt" onclick="javascript:viewprofile('mainview1','mainedit1')"><span class="fa fa-pencil"></span> View</button>
+                                                <div class="col-md-3">
+                                                    <img src="images/dev/apollo.jpg"/>
+
+                                                </div>
+                                                {!! Form::open( array( 'role' => 'form' ,'method'=>'POST', 'files'=>true,'class'=>'form-horizontal nobottommargin') ) !!}
+
+                                                <div class="col-md-9">
+                                                    <input type="text"  name="hospital_name" value="{{$hospinfo['hospitalinfo']['hospital_name']}}" class="form-control input-sm" /> <br/>
+                                                    @if ($errors->has('country_id'))<p style="">{!!$errors->first('hospital_name')!!}</p>@endif
+
+                                                </div>
+
+                                                {!! Form::close() !!}
+
+                                            </div>
+
+                                            <div class="dividersmall"></div>
+                                            <button type="button" class="edit-row btn btn-success" id="append" name="append" resource="{{Auth::user()->id}}"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+
+
+                                        </div></div>
+
+                                    <div class="dividersmall"></div>
+                                </div>
+
+
+                                <div id="mainview3">
+
+                                    <div class="box box-primary">
+                                        <button class="editbt" onclick="javascript:editprofile('mainview3','mainedit3')"><span class="fa fa-pencil"></span> Edit</button>
+                                        <div class="box-header">
+                                            <h3><span class="fa fa-info-circle"></span> Contact Info</h3>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="panel panel-default form-horizontal">
+
+                                                <div class="panel-body form-group-separated">
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 col-xs-5 control-label">Telephone</label>
+                                                        <div class="col-md-8 col-xs-7 line-height-30"> {{$hospinfo['hospitalinfo']['telephone']}}</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 col-xs-5 control-label">E-mail</label>
+                                                        <div class="col-md-8 col-xs-7 line-height-30">{{$hospinfo['hospitalinfo']['email']}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div> <!-- /box body --> </div>
+
+
+                                    <div class="dividersmall"></div>
+                                </div>
+
+
+                                <div id="mainedit3" style="display:none">
+
+                                    <div class="box box-primary">
+                                        <button class="editbt" onclick="javascript:viewprofile('mainview3','mainedit3')"><span class="fa fa-pencil"></span> View</button>
+                                        <div class="box-header">
+                                            <h3><span class="fa fa-info-circle"></span> Contact Info</h3>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="panel panel-default form-horizontal">
+
+                                                <div class="panel-body form-group-separated">
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 col-xs-5 control-label">Telephone</label>
+                                                        <div class="col-md-8 col-xs-7 line-height-30">
+                                                            <input type="text" id="" name="hospital_telephone" value="{{$hospinfo['hospitalinfo']['telephone']}}" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-4 col-xs-5 control-label">E-mail</label>
+                                                        <div class="col-md-8 col-xs-7 line-height-30">
+                                                            <input type="text" id="" name="hospital_email" value="{{$hospinfo['hospitalinfo']['email']}}" class="form-control input-sm" />
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="dividersmall"></div>
+                                        </div>
+
+                                        <button type="button" class="edit-row2 btn btn-success" id="append" name="append" resource="{{Auth::user()->id}}"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+
+                                    </div> <!-- /box body --> </div>
+
+                                <!-- /box -->
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div id="mainview2">
+
+                                <div class="box box-primary">
+                                    <button class="editbt"  onclick="javascript:editprofile('mainview2','mainedit2')" ><span class="fa fa-pencil"></span> Edit</button>
+
+                                    <div class="box-header">
+                                        <h3><span class="fa fa-pencil"></span> Profile</h3>
+                                    </div>
+                                    <div class="box-body">
+
+                                        <form action="#" class="form-horizontal">
+
+                                            <div class="panel panel-default">
+
+                                                <div class="panel-body form-group-separated">
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 col-xs-12 control-label">Address</label>
+                                                        <div class="col-md-9 col-xs-7 line-height-30">{{$hospinfo['hospitalinfo']['address']}}</div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 col-xs-12 control-label">City</label>
+                                                        <div class="col-md-6 col-xs-12 line-height-30"> {{$hospinfo['hospitalinfo']['city']}}</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 col-xs-5 control-label">State</label>
+                                                        <div class="col-md-9 col-xs-7 line-height-30"> {{$hospinfo['hospitalinfo']['state']}}</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 col-xs-5 control-label">Country</label>
+                                                        <div class="col-md-9 col-xs-7 line-height-30"> {{$hospinfo['hospitalinfo']['country']}}</div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 col-xs-5 control-label">Pin</label>
+                                                        <div class="col-md-9 col-xs-7 line-height-30"> {{$hospinfo['hospitalinfo']['pin']}}</div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+
+                                    </div> <!-- /box body --> </div>
+
+                                <div class="dividersmall"></div>
+                            </div>
+
+
+
+                            <div id="mainedit2" style="display:none">
+
+
+                                <div class="box box-primary">
+                                    <button class="editbt" onclick="javascript:viewprofile('mainview2','mainedit2')"><span class="fa fa-pencil"></span> View</button>
+
+                                    <div class="box-header">
+                                        <h3><span class="fa fa-pencil"></span> Profile</h3>
+                                    </div>
+                                    <div class="box-body">
+
+                                        {!! Form::open( array( 'role' => 'form' ,'method'=>'POST', 'files'=>true,'class'=>'form-horizontal nobottommargin') ) !!}
+                                        <div class="panel panel-default">
+
+                                            <div class="panel-body form-group-separated">
+
+                                                <div class="form-group">
+
+                                                    <label class="col-md-3 col-xs-12 control-label">Address</label>
+                                                    <div class="col-md-9 col-xs-7 line-height-30">
+                                                        <textarea id="address" name="hospital_address" class="form-control input-sm" >{{$hospinfo['hospitalinfo']['address']}}</textarea>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-md-3 col-xs-12 control-label">City</label>
+                                                    <div class="col-md-6 col-xs-12 line-height-30">
+                                                        <input type="text" id="city" name="hospital_city" value="{{$hospinfo['hospitalinfo']['city']}}" class="form-control input-sm" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 col-xs-5 control-label">State</label>
+                                                    <div class="col-md-9 col-xs-7 line-height-30"><input type="text" id="city" name="hospital_state" value="{{$hospinfo['hospitalinfo']['state']}}" class="form-control input-sm" /></div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 col-xs-5 control-label">Country</label>
+                                                    <div class="col-md-9 col-xs-7 line-height-30"><input type="text" id="city" name="hospital_country" value="{{$hospinfo['hospitalinfo']['country']}}" class="form-control input-sm" /></div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-md-3 col-xs-5 control-label">Pin</label>
+                                                    <div class="col-md-9 col-xs-7 line-height-30"><input type="text" id="city" name="hospital_pin" value="{{$hospinfo['hospitalinfo']['pin']}}" class="form-control input-sm" /></div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        {!! Form::close() !!}
+
+
+                                        <div class="dividersmall"></div>
+
+                                    </div>
+                                    <button type="button" class="edit-row1 btn btn-success" id="append" name="append" resource="{{Auth::user()->id}}"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+
+                                </div> <!-- /box body --> </div>
+                            <!-- /box -->
+
+                        </div>
+                    </div><!-- /row -->
+
+                    <div class="dividersmall"></div>
+
+
+                    <div class="box box-primary">
+
+                        <div class="box-body">
+
+                            <div class="row">
+                                <div class="col-md-12">
+
+
+                                    <div class="tabs side-tabs nobottommargin clearfix">
+
+                                        <ul class="tab-nav tab-nav2 clearfix">
+                                            <li class="active"><a href="#tabs-21">About us</a></li>
+
+                                            <li><a href="#tabs-22">Branches</a></li>
+
+                                            <li><a href="#tabs-23">Resources</a></li>
+                                            <li><a href="#tabs-24">Gallery</a></li>
+                                            <li><a href="#tabs-25">Specialities</a></li>
+                                            <li><a href="#tabs-26">Certifications</a></li>
+                                            <li><a href="#tabs-27">Treatments</a></li>
+                                            <li><a href="#tabs-28">Articles</a></li>
+
+                                        </ul>
+
+                                        <div class="tab-container">
+                                            <div id="mainview4">
+
+                                                <div class="tab-content clearfix" id="tabs-21">
+                                                    <button class="editbt" onclick="javascript:editprofile('mainview4','mainedit4')"><span class="fa fa-pencil"></span> Edit</button>
+
+                                                    <h3>About {{$hospinfo['hospitalinfo']['hospital_name']}}, {{$hospinfo['hospitalinfo']['state']}}.</h3>
+
+                                                    <p>{{$hospinfo['hospitalinfo']['hospital_info']}}</p>
+
+
+                                                    <div class="dividersmall"></div>
+                                                </div>
+
+                                            </div>
+
+
+                                            <div id="mainedit4" style="display:none">
+                                                <button class="editbt" onclick="javascript:viewprofile('mainview4','mainedit4')"><span class="fa fa-pencil"></span> View</button>
+                                                {!! Form::open( array( 'role' => 'form' ,'method'=>'POST', 'files'=>true,'class'=>'form-horizontal nobottommargin') ) !!}
+
+                                                <fieldset class="form-group">
+                                                    <label for="exampleTextarea">About Us</label>
+                                                    <textarea class="form-control" id="exampleTextarea" rows="6" class="form-control" name="hospital_info"> {{$hospinfo['hospitalinfo']['hospital_info']}}</textarea>
+                                                </fieldset>
+                                                {!! Form::close() !!}
+
+                                                <div class="dividersmall"></div>
+
+
+                                                <button type="button" class="edit-about btn btn-success" id="append" name="append" resource="{{Auth::user()->id}}"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+                                            </div>
+
+                                            <div class="tab-content clearfix" id="tabs-22">
+
+                                                <div id="mainview6">
+
+                                                    <button class="editbt" onclick="javascript:editprofile('mainview6','mainedit6')"><span class="fa fa-pencil"></span> Edit</button>
+                                                    <h3>Branches</h3>
+
+
+
+
+
+
+                                                    <div class="row">
+                                                        <?php  $count=count($hospinfo['branches']);
+                                                        for($x=0;$x<$count;$x++)
+                                                        {
+                                                        ?>
+                                                        <div class="col-md-6 infadd">
+                                                            <span class="brnch">{{$hospinfo['branches'][$x]['location']}}</span>
+                                                            <h4>{{$hospinfo['branches'][$x]['branch_name']}}</h4>
+                                                            <p>{{$hospinfo['branches'][$x]['branch_address']}}</p>
+                                                        </div>
+                                                        <?php
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                </div>
+                                                <div class="dividersmall"></div>
+
+
+                                                <div id="mainedit6" class="branchesedit" style="display:none">
+
+                                                    <button class="editbt" onclick="javascript:viewprofile('mainview6','mainedit6')"><span class="fa fa-pencil"></span> View</button>
+
+                                                    <h3>Branches</h3>
+
+                                                    <div class="col-md-12"><button class="btn btn-success btn-rounded" style="float: right;" type="submit" id="append1" name="append1"><span class="fa fa-plus"></span>Add Branch</button></div>
+
+
+
+                                                    <div class="inc">
+
+
+                                                        <table class="table datatable">
+                                                            <thead>
+                                                            <br/><br/>
+                                                            <tr>
+                                                                <th>Branch Name</th>
+                                                                <th>Branch Address</th>
+                                                                <th>Branch Location</th>
+                                                                <th>Branch Country</th>
+                                                                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                                            </tr>
+                                                            </thead>
+
+                                                            <tbody class="inc">
+
+                                                            @if (Input::old())
+
+                                                                @for ($i = 0; $i < count(Input::old('branch_name')); $i++)
+                                                                    <tr class="controls">
+                                                                        <td><input type="text" class="form-control branchesvalue1" id="branchesvalue1" name="branch_name[]" value="{{Input::old('branch_name')[$i]}}"  @if ($errors->has('branch_name.'.$i)) style="border-color: red;" @endif ></td>
+                                                                        <td><input type="text" class="form-control branchesvalue2" id="branchesvalue2" name="branch_address[]" value="{{Input::old('branch_address')[$i]}}" @if ($errors->has('branch_address.'.$i)) style="border-color: red;" @endif></td>
+                                                                        <td><input type="text" class="form-control branchesvalue3" id="branchesvalue3"  name="location[]" value="{{Input::old('location')[$i]}}" @if ($errors->has('location.'.$i)) style="border-color: red;" @endif></td>
+                                                                        <td>
+                                                                            <select class="form-control branchesvalue4" name="country[]" id="branchesvalue4" @if ($errors->has('country.'.$i)) style="border-color: red;" @endif>
+                                                                                <option value="">Select a country</option>
+                                                                                @foreach($countries as $country)
+                                                                                    <option value="{{ $country->name }}" @if ($country->name==Input::old('country')[$i]) selected="selected" @endif>{{ $country->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+
+                                                                            @if(Input::old('id')[$i]>0)
+
+                                                                                <input type="hidden" class="form-control branchesvalue5" id="branchesvalue5" name="id[]" value="{{Input::old('id')[$i]}}">
+                                                                                <input type="hidden" class="form-control" name="hospitalId" value="{{Input::old('hospitalId')}}">
+                                                                                <a href="javascript:void(0);" class="delete-row btn btn-danger btn-rounded btn-condensed btn-sm" id="append" name="append" resource="{{Input::old('id')[$i]}}"><span class="fa fa-times"></span></a>
+
+                                                                            @else
+
+                                                                                <input type="hidden" class="form-control branchesvalue4" id="branchesvalue5" name="id[]" value="{{Input::old('id')[$i]}}">
+                                                                                <button class="remove_this btn btn-danger btn-rounded btn-condensed btn-sm"><span class="fa fa-times"></span></button>
+
+                                                                            @endif
+
+
+                                                                        </td>
+                                                                    </tr>
+                                                                @endfor
+
+                                                            @elseif(sizeof($branchList)>0)
+
+                                                                @foreach($branchList as $branch)
+                                                                    <tr class="controls" >
+                                                                        <td><input type="text"  class="form-control branchesvalue1" id="branchesvalue1" name="branch_name[]" placeholder="Branch Name" value="{{$branch->branch_name}}"></td>
+                                                                        <td><input type="text" class="form-control branchesvalue2" id="branchesvalue2"  name="branch_address[]" placeholder="Branch Address" value="{{$branch->branch_address}}"></td>
+                                                                        <td><input type="text" class="form-control branchesvalue3" id="branchesvalue3" name="location[]" placeholder="Branch Location" value="{{$branch->location}}"></td>
+                                                                        <td>
+                                                                            <select class="form-control branchesvalue4"  name="country[]" id="branchesvalue4">
+                                                                                <option value="">Select a country</option>
+                                                                                @foreach($countries as $country)
+                                                                                    <option value="{{ $country->name }}" @if ($country->name==$branch->country) selected="selected" @endif>{{ $country->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </td>
+                                                                        <td><input type="hidden" class="form-control branchesvalue5" name="id[]" id="branchesvalue5" value="{{$branch->id}}">
+                                                                            <input type="hidden" class="form-control" name="hospitalId" id="" value="{{Auth::user()->id}}">
+                                                                            <a href="javascript:void(0);" class="delete-row btn btn-danger btn-rounded btn-condensed btn-sm" id="append" name="append" resource="{{$branch->id}}"><span class="fa fa-times"></span></a>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+
+                                                            @else
+
+                                                                @if (Input::old())
+                                                                    @for ($i = 0; $i < count(Input::old('branch_name')); $i++)
+                                                                        <tr class="controls">
+                                                                            <td><input type="text" class="form-control branchesvalue1" name="branch_name[]" id="branchesvalue1" value="{{Input::old('branch_name')[$i]}}"  @if ($errors->has('branch_name.'.$i)) style="border-color: red;" @endif ></td>
+                                                                            <td><input type="text" class="form-control branchesvalue2" name="branch_address[]" id="branchesvalue2"  value="{{Input::old('branch_address')[$i]}}" @if ($errors->has('branch_address.'.$i)) style="border-color: red;" @endif></td>
+                                                                            <td><input type="text" class="form-control branchesvalue3" name="location[]" id="branchesvalue3" value="{{Input::old('location')[$i]}}" @if ($errors->has('location.'.$i)) style="border-color: red;" @endif></td>
+                                                                            <td>
+                                                                                <select class="form-control branchesvalue4" name="country[]" id="branchesvalue4" @if ($errors->has('country.'.$i)) style="border-color: red;" @endif>
+                                                                                    <option value="">Select a country</option>
+                                                                                    @foreach($countries as $country)
+                                                                                        <option value="{{ $country->name }}" @if ($country->name==Input::old('country')[$i]) selected="selected" @endif>{{ $country->name }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    @endfor
+                                                                @else
+                                                                    <tr class="controls" >
+                                                                        <td><input type="text"  class="form-control branchesvalue1" id="branchesvalue1" name="branch_name[]" placeholder="Branch Name"></td>
+                                                                        <td><input type="text" class="form-control branchesvalue2" id="branchesvalue2" name="branch_address[]" placeholder="Branch Address"></td>
+                                                                        <td><input type="text" class="form-control branchesvalue3" id="branchesvalue3" name="location[]" placeholder="Branch Location"></td>
+                                                                        <td>
+                                                                            <select class="form-control branchesvalue4" name="country[]" id="branchesvalue4" id="contact_country">
+                                                                                <option value="">Select a country</option>
+                                                                                @foreach($countries as $country)
+                                                                                    <option value="{{ $country->name }}" >{{ $country->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </td>
+                                                                        <td><input class="form-control branchesvalue5" name="id[]" id="branchesvalue5" value="0" type="hidden"></td>
+                                                                    </tr>
+                                                                @endif
+
+                                                            @endif
+
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+
+
+
+                                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                                                <div class="dividersmall"></div>
+
+                                                <button type="button" class="btn btn-success btn-lg edit-branches"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+
+
+
+
+                                            </div>
+
+
+
+                                            <div class="tab-content clearfix" id="tabs-23">
+                                                <div id="mainview5">
+
+                                                    <button class="editbt" onclick="javascript:editprofile('mainview5','mainedit5')"><span class="fa fa-pencil"></span> Edit</button>
+
+                                                    <h3>Resources</h3>
+                                                    <div class="panel panel-default form-horizontal">
+
+                                                        <div class="panel-body form-group-separated fgfla">
+                                                            <?php
+                                                            $count1=count($hospinfo['hospitalresources']);
+                                                            for($y=0;$y<$count1;$y++)
+                                                            {
+                                                            ?>
+                                                            <div class="form-group" >
+                                                                <label class="col-md-6 col-xs-6 control-label">{{$hospinfo['hospitalresources'][$y]['resource_name']}}</label>
+                                                                <div class="col-md-6 col-xs-6 line-height-30"> {{$hospinfo['hospitalresources'][$y]['pivot']['resource_number']}}
+                                                                </div>
+                                                            </div>
+                                                            <?php
+                                                            }  ?>
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="dividersmall"></div>
+
+
+
+                                                <div id="mainedit5" style="display:none">
+                                                    <button class="editbt" onclick="javascript:viewprofile('mainview5','mainedit5')"><span class="fa fa-pencil"></span> View</button>
+
+                                                    <h3>Resources</h3>
+                                                    <div class="panel panel-default form-horizontal">
+
+                                                        <div id="resourceedit" class="panel-body form-group-separated fgfla">
+                                                            @foreach($resourceList as $res)
+
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 control-label">{{ucfirst($res->resource_name)}} <div style="color:red; float:right;">&nbsp; *</div></label>
+                                                                    <div class="col-md-4">
+                                                                        <input type="number" class="form-control negative resourcevalue" min="0" name="resource_id[{{$res->id}}]" value="{{ $res->resource_number}}" id="resourcevalue"/>
+          <input type="hidden" name="resouce_id" value="{{$res->id}}" id="resourcevalue1">
+                                                                    </div>
+                                                                </div>
+
+                                                            @endforeach
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <button type="button" class="edit-row3 btn btn-success" id="append" name="append" resource="{{Auth::user()->id}}" ><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+                                                </div>
+
+                                                </div>
+
+
+
+                                                <!-- /resources 23-->
+                                                <div class="tab-content clearfix" id="tabs-24">
+                                                    <button class="editbt"><span class="fa fa-pencil"></span> Edit</button>
+
+                                                    <h3>Gallery</h3>
+
+                                                    <div class="row">
+
+                                                        <?php
+                                                        $count4=count($hospinfo['hospitalgallery']);
+                                                        for($img=0;$img<$count4;$img++)
+                                                        {
+
+                                                        ?>
+                                                        <div class="col-md-3 col-xs-6">
+                                                            <img src="{{ $hospinfo['hospitalgallery'][$img]['image_path']}}"/>
+
+                                                        </div>
+
+                                                        <?php
+
+                                                        }?>
+                                                    </div>
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <h3>Gallery</h3>
+
+                                                    <div class="row">
+                                                        <div class="col-md-3 col-xs-6">
+                                                            <img src="images/dev/gallery1.jpg"/>
+                                                            <button class="btn btn-sm btn-danger editbtc"><i class="fa fa-trash"></i> Remove</button>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xs-6">
+                                                            <img src="images/dev/gallery2.jpg"/>
+                                                            <button class="btn btn-sm btn-danger editbtc"><i class="fa fa-trash"></i> Remove</button>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xs-6">
+                                                            <img src="images/dev/gallery3.jpg"/>
+                                                            <button class="btn btn-sm btn-danger editbtc"><i class="fa fa-trash"></i> Remove</button>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-xs-6">
+                                                            <img src="images/dev/gallery4.jpg"/>
+                                                            <button class="btn btn-sm btn-danger editbtc"><i class="fa fa-trash"></i> Remove</button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-8">
+
+                                                            <fieldset class="form-group">
+                                                                <label for="exampleInputFile">Upload Image</label>
+                                                                <input type="file" class="form-control-file" id="exampleInputFile">
+
+                                                            </fieldset>
+                                                            <div class="dividersmall"></div>
+
+                                                            <button type="button" class="btn btn-success btn-lg"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+
+                                                        </div>
+                                                        <div class="col-md-4">
+
+                                                        </div>
+                                                    </div>
+
+                                                </div><!-- /gallery-->
+
+
+                                                <div class="tab-content clearfix" id="tabs-25">
+                                                    <button class="editbt"><span class="fa fa-pencil"></span> Edit</button>
+
+
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <h3><span class="fa fa-pencil"></span> Specialities</h3>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group" id="specialityedit">
+
+
+                                                        @foreach ($specialtyList as $spl)
+                                                            <div class="col-md-4">
+                                                                <p>
+                                                                    <label class="check"><input type="checkbox" id="specialityvalue" name="specialties[]" value="{{$spl->id}}" class="icheckbox specialityvalue"  @if($spl->user_id!="") checked="true" @endif   /> {{$spl->speciality_name}}</label><br/>
+                                                               <input type="hidden" id="specialityvalue1" value="{{$spl->id}}">
+
+                                                                </p>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+
+                                                    <div class="dividersmall"></div>
+
+                                                <!--/specialites -->
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <button type="button" type="button" class="edit-speciality btn btn-success" id="append" name="append" resource="{{Auth::user()->id}}"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+
+
+                                                </div>        <!-- /specialities-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                <div class="tab-content clearfix" id="tabs-26">
+                                                    <button class="editbt"><span class="fa fa-pencil"></span> Edit</button>
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <h3>Certification</h3>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row row-eq-height">
+
+                                                        <div class="form-group">
+                                                            @foreach($certificationList as $cert)
+                                                                <div class="col-md-4">
+                                                                    <label class="check"><input type="checkbox" name="certifications[]" id="certifications" value="{{$cert->id}}" class="icheckbox certifications"  @if($cert->user_id!="") checked="true" @endif/> {{$cert->certification_name}}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <button type="button"  class="edit-cert btn btn-success" id="append" name="append" resource="{{Auth::user()->id}}" ><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+
+
+                                                </div><!-- /accreditions-->
+
+
+                                                <div class="tab-content clearfix" id="tabs-27">
+
+                                                    <div id="mainview7">
+
+                                                        <button class="editbt" onclick="javascript:editprofile('mainview7','mainedit7')"><span class="fa fa-pencil"></span> Edit</button>
+
+
+
+                                                    <h3>Treatments</h3>
+
+
+
+                                                    <div class="panel panel-default form-horizontal">
+
+                                                        <div class="panel-body form-group-separated fgfla">
+
+                                                            <div class="form-group fghead" >
+                                                                <label class="col-md-4 col-xs-4 control-label">Treatment Name</label>
+                                                                <div class="col-md-4 col-xs-4 line-height-30">Price range from</div>
+                                                                <div class="col-md-4 col-xs-4 line-height-30">Price range to</div>
+                                                            </div>
+
+                                                            <?php
+
+                                                            $countt=count($hospinfo['hospitaltreatments']);
+                                                            for($t=0;$t<$countt;$t++)
+                                                            {
+                                                            ?>
+
+                                                            <div class="form-group">
+                                                                <label class="col-md-4 col-xs-4 control-label">{{$hospinfo['hospitaltreatments'][$t]['treatment_name']}}
+                                                                </label>
+                                                                <div class="col-md-4 col-xs-4 line-height-30"> {{$hospinfo['hospitaltreatments'][$t]['pivot']['price_range_from']}}</div>
+                                                                <div class="col-md-4 col-xs-4 line-height-30"> {{$hospinfo['hospitaltreatments'][$t]['pivot']['price_range_to']}}</div>
+                                                            </div>
+                                                            <?php
+
+                                                            }              ?>
+
+
+
+
+
+                                                        </div>
+
+
+                                                    </div>
+
+
+
+</div>
+
+                                                    <div class="dividersmall"></div>
+
+
+
+
+                                                    <div id="mainedit7" style="display:none">
+                                                        <button class="editbt" onclick="javascript:viewprofile('mainview7','mainedit7')"><span class="fa fa-pencil"></span> View</button>
+
+                                                    <h3>Treatments</h3>
+                                                    <div class="panel panel-default form-horizontal">
+
+                                                        <div class="panel-body form-group-separated fgfla">
+
+                                                            <div class="form-group fghead" >
+                                                                <label class="col-md-4 col-xs-4 control-label">Treatment Name</label>
+                                                                <div class="col-md-4 col-xs-4 line-height-30">Price range from</div>
+                                                                <div class="col-md-4 col-xs-4 line-height-30">Price range to</div>
+                                                            </div>
+                                                            <?php
+
+                                                            $countt=count($hospinfo['hospitaltreatments']);
+                                                            for($t=0;$t<$countt;$t++)
+                                                            {
+                                                                ?>
+                                                            <div class="form-group">
+                                                                <label class="col-md-4 col-xs-4 control-label"><input type="text" id="" name="" value="{{$hospinfo['hospitaltreatments'][$t]['treatment_name']}}" class="form-control input-sm" /></label>
+                                                                <div class="col-md-4 col-xs-4 line-height-30"><input type="text" id="" name="" value="{{$hospinfo['hospitaltreatments'][$t]['pivot']['price_range_from']}}" class="form-control input-sm" /></div>
+                                                                <div class="col-md-4 col-xs-4 line-height-30"><input type="text" id="" name="" value="{{$hospinfo['hospitaltreatments'][$t]['pivot']['price_range_to']}}" class="form-control input-sm" /></div>
+                                                            </div>
+                                                            <?php
+
+                                                            }              ?>
+
+
+                                                        </div>
+
+
+                                                    </div>
+
+</div>
+                                                    @endforeach
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <button type="button" class="btn btn-success btn-lg"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+
+
+
+                                                </div><!-- /Treatments-->
+
+
+
+                                                <div class="tab-content clearfix" id="tabs-28">
+                                                    <button class="editbt"><span class="fa fa-pencil"></span> Edit</button>
+                                                    <h3>Articles</h3>
+
+
+
+
+
+
+                                                    <div class="dividersmall"></div>
+
+                                                    <button type="button" class="btn btn-success btn-lg"><i class="fa fa-floppy-o"></i> Save Changes</button>&nbsp;  <button type="button" class="btn btn-danger btn-lg"><i class="fa fa-times"></i> Cancel</button>
+
+                                                </div><!-- /articles-->
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div><!-- /box -->
+
+
+
+
+                    </div>
+
+
+
+
+                </div>
+                <div class="clear"></div>
+            </div>
+
+    </section>
+    <!--End Hospital Details Body-->
+@endsection
+
+@section('scripts')
+    {!!  Html::script('js/functions.js') !!}
+    <script>
+
+        function editprofile(vid,eid)
+        {
+            $('#'+vid).hide();
+            $('#'+eid).show();
+        }
+
+        function viewprofile(vid,eid)
+        {
+            $('#'+vid).show();
+            $('#'+eid).hide();
+        }
+    </script>
+
+
+    <script>
+        var headHeight = $( "header" ).height();
+        var navHeight = $( window ).height();
+        var sideHeight = navHeight - headHeight;
+        $("#leftCol").css("min-height", sideHeight);
+        $("#leftCol #sidebar").css("min-height", sideHeight);
+    </script>
+
+@stop
